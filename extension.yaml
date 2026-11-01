@@ -1,0 +1,182 @@
+manifest_version: 2
+lifecycle:
+  data_schema_version: 0
+  data_migrations: []
+extension_id: flowsteward.sqlite
+kind: tool_provider
+version: 1.0.0
+release_stage: active
+display_name: SQLite
+description: Project-scoped SQLite workflow reads, schema inspection and parameterized
+  writes in persistent owned storage.
+vendor:
+  name: Flow Steward
+  support_url: https://github.com/Flow-Steward/ext-data-sqlite/issues
+  website_url: https://github.com/Flow-Steward/ext-data-sqlite
+listing:
+  category: data
+  tags:
+  - database
+  - sqlite
+  - sql
+  - workflow
+  summary: Project-scoped SQLite workflow reads, schema inspection and parameterized
+    writes in persistent owned storage.
+  description: Project-scoped SQLite workflow reads, schema inspection and parameterized
+    writes in persistent owned storage.
+package:
+  format: flow-steward-extension
+  license: Apache-2.0
+  includes_source: true
+billing_mode: free
+upgrade_notes: New workflow-only identity with persistent project files; legacy dataset
+  connections remain on the family extension.
+screenshots:
+- label: Overview
+  description: SQLite workflow tool overview and persistent project storage notes.
+  path: ui/components/overview.yaml
+features:
+- tool
+- action
+required_scopes:
+- extension:invoke
+machine_auth:
+  service_account_key: svc_ext_sqlite
+  required_scopes:
+  - extension:invoke
+account_scope:
+  scope_type: project
+  description: Files are isolated by trusted account/project scope in persistent extension-owned
+    HOME storage.
+external_effects:
+- operation_id: execute_write
+  effect_kind: database_write
+  channel: sqlite
+  idempotency: required
+  test_mode_behavior: suppress
+schemas:
+  config: schemas/config.schema.yaml
+  secrets: schemas/secrets.schema.yaml
+  subscriptions: schemas/subscriptions.schema.yaml
+entrypoint:
+  mode: subprocess
+  command:
+  - python3
+  - main.py
+health:
+  command:
+  - python3
+  - health.py
+  timeout_seconds: 5
+ui_manifest: ui/ui_manifest.yaml
+action_manifest: ui/actions/actions.yaml
+runtime:
+  contract_version: extension_host_v2
+  extension_contract_v2:
+    connection_types:
+    - connection_type_id: sqlite
+      display_name: SQLite project database
+      description: A pre-provisioned SQLite filename in persistent owned project storage.
+      config_schema:
+        type: object
+        additionalProperties: false
+        required:
+        - prebuilt
+        - database
+        properties:
+          prebuilt:
+            type: string
+            title: Database type
+            enum:
+            - sqlite
+          database:
+            type: string
+            title: Project database filename (.db)
+            pattern: ^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\.db$
+      secret_schema:
+        type: object
+        additionalProperties: false
+        properties: {}
+        required: []
+      capabilities:
+        write_queries: true
+      safety_profile:
+        stores_secret_values: false
+    operation_manifest:
+    - workflow_visible: true
+      operation_kind: action
+      category: database
+      connection_type_ids: &id001
+      - sqlite
+      required_scopes: &id002
+      - extension:invoke
+      outputs: &id003
+      - name: rows
+        value_type: array
+      - name: row_count
+        value_type: integer
+      - name: truncated
+        value_type: boolean
+      result_fields: &id004
+      - result.rows
+      - result.row_count
+      - result.truncated
+      error_codes: &id005
+      - invalid_payload
+      - provider_unavailable
+      operation_id: read_query
+      display_name: Read SQLite rows
+      description: Execute one bounded SELECT with native driver parameters.
+      inputs: &id007
+      - &id006
+        name: connection_ref
+        value_type: connection_ref
+        required: true
+      - name: sql
+        value_type: text
+        required: true
+      - name: params
+        value_type: object
+        required: false
+      - name: param_schema
+        value_type: object
+        required: false
+    - workflow_visible: true
+      operation_kind: action
+      category: database
+      connection_type_ids: *id001
+      required_scopes: *id002
+      outputs: *id003
+      result_fields: *id004
+      error_codes: *id005
+      operation_id: inspect_schema
+      display_name: Inspect SQLite schema
+      description: List bounded table/view definitions from the selected project database.
+      inputs:
+      - *id006
+    - operation_id: execute_write
+      display_name: Execute database write
+      workflow_visible: true
+      operation_kind: action
+      category: database
+      description: Execute one native-bound INSERT, UPDATE or DELETE on the selected
+        project SQLite file.
+      connection_type_ids:
+      - sqlite
+      required_scopes:
+      - extension:invoke
+      inputs: *id007
+      outputs:
+      - name: status
+        value_type: text
+      - name: rows
+        value_type: array
+      - name: returned_row_count
+        value_type: integer
+      result_fields:
+      - result.status
+      - result.rows
+      - result.returned_row_count
+      error_codes:
+      - invalid_payload
+      - write_outcome_unknown

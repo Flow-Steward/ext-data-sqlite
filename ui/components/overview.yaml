@@ -1,0 +1,7 @@
+component_id: toolbox_dataset_connector_overview
+type: markdown
+title: SQLite Connector
+body: Read project SQLite rows, inspect table definitions and execute parameterized
+  INSERT, UPDATE or DELETE. Files persist in extension-owned HOME storage across extension
+  upgrades. An administrator provisions the file and schema first. This workflow tool
+  does not register a dataset connector.

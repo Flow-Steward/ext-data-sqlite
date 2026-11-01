@@ -1,0 +1,64 @@
+actions:
+- action_id: read_query
+  title: Read SQLite rows
+  description: Execute one bounded SELECT with native driver parameters.
+  workflow_visible: true
+  required_scopes: &id001
+  - extension:invoke
+  handler: &id002
+    mode: extension
+  command_type: invoke_extension_action
+  mutates_platform: false
+  parameters: &id006
+  - &id003
+    name: connection_ref
+    type: connection_ref
+    required: true
+  - name: sql
+    type: string
+    required: true
+  - name: params
+    type: object
+    required: false
+  - name: param_schema
+    type: object
+    required: false
+  result_fields: &id004
+  - result.rows
+  - result.row_count
+  - result.truncated
+  error_codes: &id005
+  - invalid_payload
+  - provider_unavailable
+- action_id: inspect_schema
+  title: Inspect SQLite schema
+  description: List bounded table/view definitions from the selected project database.
+  workflow_visible: true
+  required_scopes: *id001
+  handler: *id002
+  command_type: invoke_extension_action
+  mutates_platform: false
+  parameters:
+  - *id003
+  result_fields: *id004
+  error_codes: *id005
+- action_id: execute_write
+  title: Write SQLite rows
+  description: Execute one native-bound INSERT, UPDATE or DELETE on the selected project
+    SQLite file.
+  workflow_visible: true
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+  command_type: invoke_extension_action
+  mutates_platform: true
+  test_mode_behavior: suppress
+  parameters: *id006
+  result_fields:
+  - result.status
+  - result.rows
+  - result.returned_row_count
+  error_codes:
+  - invalid_payload
+  - write_outcome_unknown

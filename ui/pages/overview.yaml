@@ -1,0 +1,5 @@
+page_id: overview
+title: Overview
+description: SQLite workflow operations and persistent project storage.
+components:
+  - ref: ../components/overview.yaml

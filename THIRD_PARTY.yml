@@ -1,0 +1,34 @@
+name: MCP Toolbox for Databases
+version: 1.3.0
+tag: v1.3.0
+commit: b0010060a939455d91e4f8ba62dc3e72b1892469
+source_url: https://github.com/googleapis/mcp-toolbox
+license: Apache-2.0
+release:
+  published_at: 2026-05-21 21:49:59+00:00
+  official_linux_amd64_url: https://storage.googleapis.com/mcp-toolbox-for-databases/v1.3.0/linux/amd64/toolbox
+  official_linux_amd64_bytes: 287397352
+  official_linux_arm64_available: false
+build:
+  script: scripts/build_toolbox.sh (github.com/Flow-Steward/ext-data-sqlite)
+  container_image: golang:1.26.2-bookworm@sha256:47ce5636e9936b2c5cbf708925578ef386b4f8872aec74a67bd13a627d242b19
+  go_version: 1.26.2
+  targets:
+  - linux-amd64
+  - linux-arm64
+  flags:
+  - -trimpath
+  - -buildvcs=false
+  - -s
+  - -w
+  - -buildid=
+  registered_prebuilts:
+  - sqlite
+  local_patch: scripts/patches/0001-flowsteward-driver-bound-query-params.patch
+  local_patch_purpose: Native driver-bound query parameters; explicit one-shot ExecContext
+    DML; Spanner statement-based Update and Commit without a transaction retry loop.
+  network_at_install_or_runtime: false
+  additional_patches:
+  - path: scripts/patches/0002-flowsteward-sqlite-read-safety.patch
+    sha256: bb40a1c9fa4009c1cdb636838f366d6286c4defcb5d1250a2b51541f63f9856e
+    purpose: SQLite single-read defense plus actual native row and inline byte budgets.

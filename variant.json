@@ -1,0 +1,7 @@
+{
+  "prebuilts": [
+    "sqlite"
+  ],
+  "display_name": "SQLite",
+  "version": "1.0.0"
+}
