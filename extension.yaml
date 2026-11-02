@@ -4,7 +4,7 @@ lifecycle:
   data_migrations: []
 extension_id: flowsteward.sqlite
 kind: tool_provider
-version: 1.0.0
+version: 1.0.1
 release_stage: active
 display_name: SQLite
 description: Project-scoped SQLite workflow reads, schema inspection and parameterized

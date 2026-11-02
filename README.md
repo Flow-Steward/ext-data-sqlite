@@ -1,8 +1,8 @@
 # SQLite workflows for Flow Steward
 
-`flowsteward.sqlite` version **1.0.0** is a standalone workflow tool for project-scoped SQLite reads, schema inspection and parameterized writes. Its public repository is [Flow-Steward/ext-data-sqlite](https://github.com/Flow-Steward/ext-data-sqlite). Separate Linux AMD64 and ARM64 archives include the native SQLite driver through pinned Google MCP Toolbox.
+`flowsteward.sqlite` version **1.0.1** is a standalone workflow tool for project-scoped SQLite reads, schema inspection and parameterized writes. Its public repository is [Flow-Steward/ext-data-sqlite](https://github.com/Flow-Steward/ext-data-sqlite). Separate Linux AMD64 and ARM64 archives include the native SQLite driver through pinned Google MCP Toolbox.
 
-This new identity exposes `read_query`, `inspect_schema` and `execute_write`. It does not register a dataset connector. The existing `flowsteward.data-connector-mcp-toolbox-sqlite` remains a separate legacy read-only family extension; its existing dataset connections are not migrated or silently redirected.
+This is the single maintained SQLite extension. It exposes `read_query`, `inspect_schema` and `execute_write`. The obsolete read-only Google MCP Toolbox SQLite entry has been removed from the catalog; no migration is required for this pre-release replacement. It does not register a dataset connector.
 
 ## Persistent project files
 
