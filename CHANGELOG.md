@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+- Use official database brand artwork with recorded source attribution.
+- Document the single maintained SQLite package after removal of the unused catalog duplicate.
+
+
 ## 1.0.0
 
 - Introduce workflow-only `flowsteward.sqlite` with project-scoped read_query, inspect_schema and execute_write. Legacy family SQLite dataset registrations remain separate.
